@@ -1,18 +1,23 @@
 .PHONY: clean
 
-MAIN = phys
-CC = gcc
-CFLAGS = -Wall -Wextra -g
+MAIN := phys
+CC := gcc
+INCLUDES := -Iinclude
+CFLAGS := -Wall -Wextra -g $(INCLUDES)
 
-SRCS = main.c world.c object.c phys.c
-OBJS = $(SRCS:.c=.o)
+SOURCES := main.c $(wildcard src/*.c)
+OBJS := $(patsubst %.c,%.o,$(SOURCES))
+$(info compiling sources $(SOURCES) into $(OBJS))
 
 all: $(MAIN)
 	@echo Done!
 
 $(MAIN):	$(OBJS)
-	@echo Compiling $(OBJS) ...
+	$(info Creating $(MAIN) executable...)
 	$(CC) $(CFLAGS) -o $(MAIN) $(OBJS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 clean:
 	rm -rf *.o $(MAIN)
